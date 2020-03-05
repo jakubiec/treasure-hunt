@@ -12,7 +12,6 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("io.kotlintest:kotlintest:2.0.7")
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
 }
 
