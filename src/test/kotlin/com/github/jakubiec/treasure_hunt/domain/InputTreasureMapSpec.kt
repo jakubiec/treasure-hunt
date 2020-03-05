@@ -20,7 +20,7 @@ class InputTreasureMapSpec : StringSpec() {
 
             val inputTreasureMap = InputTreasureMap.of(input)
 
-            inputTreasureMap shouldBe ValidInputTreasureMap(TreasureMapTable(input))
+            inputTreasureMap shouldBe ValidInputTreasureMap(input)
         }
 
         forall(

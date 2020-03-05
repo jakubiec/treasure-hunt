@@ -10,7 +10,7 @@ sealed class InputTreasureMap {
             table
                 .takeIf(::hasRequiredSize)
                 ?.takeIf(::rowsHasRequiredSizeAndValues)
-                ?.let { ValidInputTreasureMap(TreasureMapTable(table)) }
+                ?.let { ValidInputTreasureMap(table) }
                 ?: InvalidInputTreasureMap(table)
 
         private fun hasRequiredSize(input: Array<IntArray>) = input.size == requiredSize
@@ -25,8 +25,5 @@ sealed class InputTreasureMap {
     }
 }
 
-data class ValidInputTreasureMap internal constructor(val table: TreasureMapTable) : InputTreasureMap()
+data class ValidInputTreasureMap internal constructor(val table: Array<IntArray>) : InputTreasureMap()
 data class InvalidInputTreasureMap internal constructor(val input: Array<IntArray>) : InputTreasureMap()
-
-inline class TreasureMapTable(val table: Array<IntArray>)
-
