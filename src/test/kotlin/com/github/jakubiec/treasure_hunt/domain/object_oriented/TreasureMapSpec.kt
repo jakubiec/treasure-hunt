@@ -1,9 +1,7 @@
 package com.github.jakubiec.treasure_hunt.domain.object_oriented
 
 import com.github.jakubiec.treasure_hunt.domain.ValidInputTreasureMap
-import com.github.jakubiec.treasure_hunt.domain.object_oriented.TreasureMap.Cell
-import io.kotlintest.matchers.collections.shouldBeEmpty
-import io.kotlintest.matchers.collections.shouldContainExactly
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 
 class TreasureMapSpec : FeatureSpec() {
@@ -23,18 +21,20 @@ class TreasureMapSpec : FeatureSpec() {
                     )
                 )
 
-                val cells = TreasureMap(input).explore()
+                val treasure = TreasureMap(input).explore()
 
-                cells shouldContainExactly setOf(
-                    Cell(1, 1, 55),
-                    Cell(5, 5, 15),
-                    Cell(1, 5, 21),
-                    Cell(2, 1, 44),
-                    Cell(4, 4, 32),
-                    Cell(3, 2, 13),
-                    Cell(1, 3, 25),
-                    Cell(2, 5, 43),
-                    Cell(4, 3, 43)
+                treasure shouldBe FoundTreasure(
+                    setOf(
+                        Cell(1, 1, 55),
+                        Cell(5, 5, 15),
+                        Cell(1, 5, 21),
+                        Cell(2, 1, 44),
+                        Cell(4, 4, 32),
+                        Cell(3, 2, 13),
+                        Cell(1, 3, 25),
+                        Cell(2, 5, 43),
+                        Cell(4, 3, 43)
+                    )
                 )
             }
 
@@ -49,9 +49,9 @@ class TreasureMapSpec : FeatureSpec() {
                     )
                 )
 
-                val cells = TreasureMap(input).explore()
+                val treasure = TreasureMap(input).explore()
 
-                cells.shouldBeEmpty()
+                treasure shouldBe NotFoundTreasure
             }
         }
     }

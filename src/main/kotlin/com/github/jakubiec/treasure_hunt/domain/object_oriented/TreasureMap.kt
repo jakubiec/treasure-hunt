@@ -7,10 +7,11 @@ class TreasureMap(input: ValidInputTreasureMap) {
     private val startingColumn = 1
     private val table = input.table
 
-    fun explore(): Set<Cell> =
+    fun explore(): Treasure =
         exploreTreasureMap()
             .takeIf { cells -> cells.any { cell -> cell.isTreasure() } }
-            ?: emptySet()
+            ?.let { cells -> FoundTreasure(cells) }
+            ?: NotFoundTreasure
 
     private fun exploreTreasureMap(): LinkedHashSet<Cell> {
         var cell = startingCell()
@@ -25,20 +26,18 @@ class TreasureMap(input: ValidInputTreasureMap) {
         return visitedCells
     }
 
-    private fun startingCell() = Cell(startingRow, startingColumn, table[startingRow - 1][startingColumn - 1])
+    private fun startingCell() = Cell(
+        startingRow,
+        startingColumn,
+        table[startingRow - 1][startingColumn - 1]
+    )
 
     private fun nextCellOf(cell: Cell) = cell.run {
-        Cell(nextCellRow, nextCellColumn, table[nextCellRow - 1][nextCellColumn - 1])
-    }
-
-    data class Cell(val row: Int, val column: Int, val value: Int) {
-
-        internal val nextCellRow = value / 10
-        internal val nextCellColumn = value % 10
-
-        fun isNotTreasure(): Boolean = isTreasure().not()
-
-        fun isTreasure() = row * 10 + column == value
+        Cell(
+            nextCellRow,
+            nextCellColumn,
+            table[nextCellRow - 1][nextCellColumn - 1]
+        )
     }
 
 }
