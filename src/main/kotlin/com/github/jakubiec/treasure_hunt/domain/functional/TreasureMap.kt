@@ -63,11 +63,8 @@ data class CellValue private constructor(val value: Int) {
         }
     }
 
-    fun toCoordinates(): ValidCoordinates = ValidCoordinates(tens(), units())
+    fun toCoordinates(): ValidCoordinates = ValidCoordinates(value.tens(), value.units())
 
-    private fun units() = value % 10
-
-    private fun tens() = value / 10
 }
 
 sealed class Coordinates {
@@ -77,7 +74,9 @@ sealed class Coordinates {
     companion object {
         private val allowedRange = (1..5)
 
-        fun of(row: Int, column: Int): Coordinates {
+        fun of(coordinates: Int): Coordinates {
+            val row = coordinates.tens()
+            val column = coordinates.units()
             return if (row in allowedRange && column in allowedRange) {
                 ValidCoordinates(row, column)
             } else {
@@ -96,3 +95,6 @@ data class InvalidCoordinates internal constructor(
     override val row: Int,
     override val column: Int
 ) : Coordinates()
+
+private fun Int.tens() = this / 10
+private fun Int.units() = this % 10

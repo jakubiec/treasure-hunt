@@ -6,5 +6,5 @@ interface TreasureStorage {
 
     suspend fun store(treasureMap: ValidInputTreasureMap)
 
-    suspend fun get(): ValidInputTreasureMap
+    suspend fun get(): ValidInputTreasureMap?
 }
