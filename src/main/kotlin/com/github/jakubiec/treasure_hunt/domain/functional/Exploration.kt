@@ -11,7 +11,7 @@ sealed class ExplorationResult
 object TreasureNotFound : ExplorationResult()
 data class TreasureFound(val visitedCells: Set<VisitedCell>) : ExplorationResult()
 
-inline class StartingPoint(val cellCoordinates: Coordinates)
+inline class StartingPoint(val cellCoordinates: ValidCoordinates)
 
 val explore: Explore = { inputTreasureMap, startingPoint ->
     exploreWorkflow(toTreasureMap)(inputTreasureMap, startingPoint)
@@ -28,7 +28,7 @@ private val toTreasureMap: ToTreasureMap = { inputTreasureMap ->
         .table
         .mapIndexed { rowIndex, row ->
             row.mapIndexed { columnIndex, value ->
-                Cell.of(Coordinates.of(rowIndex+1, columnIndex+1), CellValue.of(value))
+                Cell.of(ValidCoordinates(rowIndex + 1, columnIndex + 1), CellValue.of(value))
             }
         }
         .flatten()
@@ -36,7 +36,7 @@ private val toTreasureMap: ToTreasureMap = { inputTreasureMap ->
         .let { cells -> TreasureMap(cells) }
 }
 
-private tailrec fun visit(map: TreasureMap, nextCellCoordinates: Coordinates): ExplorationResult =
+private tailrec fun visit(map: TreasureMap, nextCellCoordinates: ValidCoordinates): ExplorationResult =
     when (val cell = map.cellAt(nextCellCoordinates)) {
         is VisitedCell -> TreasureNotFound
         is TreasureCell -> TreasureFound(map.visitedCells + VisitedCell(cell.coordinates, cell.value))

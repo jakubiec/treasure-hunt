@@ -4,9 +4,9 @@ internal data class TreasureMap(val cells: Set<Cell>, val visitedCells: Set<Visi
 
     private val cellLookup = cells.map { it.coordinates to it }.toMap()
 
-    fun cellAt(coordinates: Coordinates): Cell = cellLookup.getValue(coordinates)
+    fun cellAt(coordinates: ValidCoordinates): Cell = cellLookup.getValue(coordinates)
 
-    fun visit(coordinates: Coordinates): TreasureMap = visitCell(cellAt(coordinates))
+    fun visit(coordinates: ValidCoordinates): TreasureMap = visitCell(cellAt(coordinates))
 
     private fun visitCell(cell: Cell) =
         when (cell) {
@@ -25,17 +25,18 @@ internal data class TreasureMap(val cells: Set<Cell>, val visitedCells: Set<Visi
             }
 
 
-    private fun replaceCell(coordinates: Coordinates, cell: Cell) = (cellLookup + (coordinates to cell)).values.toSet()
+    private fun replaceCell(coordinates: ValidCoordinates, cell: Cell) =
+        (cellLookup + (coordinates to cell)).values.toSet()
 
 }
 
 sealed class Cell {
     abstract val value: CellValue
-    abstract val coordinates: Coordinates
+    abstract val coordinates: ValidCoordinates
 
     companion object {
 
-        fun of(coordinates: Coordinates, cellValue: CellValue): Cell =
+        fun of(coordinates: ValidCoordinates, cellValue: CellValue): Cell =
             if (cellValue.toCoordinates() == coordinates) {
                 TreasureCell(coordinates, cellValue)
             } else {
@@ -44,12 +45,12 @@ sealed class Cell {
     }
 }
 
-internal data class NotVisitedCell(override val coordinates: Coordinates, override val value: CellValue) : Cell() {
+internal data class NotVisitedCell(override val coordinates: ValidCoordinates, override val value: CellValue) : Cell() {
     fun visit(): VisitedCell = VisitedCell(coordinates, value)
 }
 
-data class VisitedCell(override val coordinates: Coordinates, override val value: CellValue) : Cell()
-internal data class TreasureCell(override val coordinates: Coordinates, override val value: CellValue) : Cell()
+data class VisitedCell(override val coordinates: ValidCoordinates, override val value: CellValue) : Cell()
+internal data class TreasureCell(override val coordinates: ValidCoordinates, override val value: CellValue) : Cell()
 
 data class CellValue private constructor(val value: Int) {
 
@@ -62,24 +63,36 @@ data class CellValue private constructor(val value: Int) {
         }
     }
 
-    fun toCoordinates(): Coordinates = Coordinates.of(tens(), units())
+    fun toCoordinates(): ValidCoordinates = ValidCoordinates(tens(), units())
 
     private fun units() = value % 10
 
     private fun tens() = value / 10
 }
 
-data class Coordinates private constructor(val row: Int, val column: Int) {
+sealed class Coordinates {
+    abstract val row: Int
+    abstract val column: Int
 
     companion object {
         private val allowedRange = (1..5)
 
         fun of(row: Int, column: Int): Coordinates {
-            require(row in allowedRange)
-            require(column in allowedRange)
-            return Coordinates(row, column)
+            return if (row in allowedRange && column in allowedRange) {
+                ValidCoordinates(row, column)
+            } else {
+                InvalidCoordinates(row, column)
+            }
         }
     }
 }
 
+data class ValidCoordinates internal constructor(
+    override val row: Int,
+    override val column: Int
+) : Coordinates()
 
+data class InvalidCoordinates internal constructor(
+    override val row: Int,
+    override val column: Int
+) : Coordinates()
