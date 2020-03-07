@@ -64,6 +64,6 @@ class ConsoleAdapterSpec : StringSpec() {
         }
     }
 
-    private val explorer = Explorer(InMemoryTreasureStorage)
+    private val explorer = Explorer(TreasureStorageFactory().treasureStorage())
     private val consoleAdapter = ConsoleAdapter(explorer)
 }

@@ -2,13 +2,15 @@ package com.github.jakubiec.treasure_hunt.adapters
 
 import com.github.jakubiec.treasure_hunt.application.TreasureStorage
 import com.github.jakubiec.treasure_hunt.domain.ValidInputTreasureMap
+import io.micronaut.context.annotation.Factory
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import javax.inject.Singleton
 
-object InMemoryTreasureStorage : TreasureStorage {
+private object InMemoryTreasureStorage : TreasureStorage {
 
     private val mutex = Mutex()
-    private lateinit var storedTreasureMap: ValidInputTreasureMap
+    private var storedTreasureMap: ValidInputTreasureMap? = null
 
     override suspend fun store(treasureMap: ValidInputTreasureMap) {
         mutex.withLock {
@@ -16,7 +18,14 @@ object InMemoryTreasureStorage : TreasureStorage {
         }
     }
 
-    override suspend fun get(): ValidInputTreasureMap = mutex.withLock {
+    override suspend fun get(): ValidInputTreasureMap? = mutex.withLock {
         storedTreasureMap
     }
+}
+
+@Factory
+internal class TreasureStorageFactory {
+
+    @Singleton
+    fun treasureStorage(): TreasureStorage = InMemoryTreasureStorage
 }
