@@ -1,6 +1,7 @@
 package com.github.jakubiec.treasure_hunt.domain.object_oriented
 
 import com.github.jakubiec.treasure_hunt.domain.ValidInputTreasureMap
+import com.github.jakubiec.treasure_hunt.validInputTreasureMap
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FeatureSpec
 
@@ -11,17 +12,7 @@ class TreasureMapSpec : FeatureSpec() {
         feature("Treasure map exploration") {
 
             scenario("should find treasure") {
-                val input = ValidInputTreasureMap(
-                    arrayOf(
-                        intArrayOf(55, 14, 25, 52, 21),
-                        intArrayOf(44, 31, 11, 53, 43),
-                        intArrayOf(24, 13, 45, 12, 34),
-                        intArrayOf(42, 22, 43, 32, 41),
-                        intArrayOf(51, 23, 33, 54, 15)
-                    )
-                )
-
-                val treasure = TreasureMap(input).explore()
+                val treasure = TreasureMap(validInputTreasureMap).explore()
 
                 treasure shouldBe FoundTreasure(
                     setOf(
